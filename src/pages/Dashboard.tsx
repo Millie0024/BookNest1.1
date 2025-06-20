@@ -422,7 +422,6 @@ const Dashboard: React.FC = () => {
                       </div>
 
                       <div className="form-group">
-                        <label htmlFor="genre">Genre</label>
                         <GenreSelector
                           genre={currentBook.genre}
                           onChange={handleGenreChange}
