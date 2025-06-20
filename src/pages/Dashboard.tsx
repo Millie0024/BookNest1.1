@@ -285,7 +285,7 @@ const Dashboard: React.FC = () => {
           <div className="user-controls">
             {user && userProfile && (
               <span className="user-greeting">
-                Hello, {userProfile.firstName} {userProfile.lastName.charAt(0)}.
+                Hello, {userProfile.firstName} {userProfile.lastName}.
               </span>
             )}
 
