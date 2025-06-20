@@ -1,6 +1,6 @@
 // api/sendOtp.ts
 export const sendOtp = async (email: string) => {
-  const res = await fetch("http://localhost:5000/api/send-otp", {
+  const res = await fetch("https://booknest1-1.onrender.com/api/send-otp", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ email }),
