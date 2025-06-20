@@ -7,12 +7,27 @@ import PageLoader from "./PageLoader";
 import homeImage from "../assets/home.jpg";
 import logoImage from "../assets/logo.jpg";
 
+const Popup: React.FC<{ message: string; onClose: () => void }> = ({
+  message,
+  onClose,
+}) => {
+  return (
+    <div className="popup-overlay">
+      <div className="popup-box">
+        <p>{message}</p>
+        <button onClick={onClose}>Close</button>
+      </div>
+    </div>
+  );
+};
+
 const LandingPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [email, setEmail] = useState("");
+  const [showPopup, setShowPopup] = useState(false);
 
   useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 1200); // Simulate loading delay
+    const timer = setTimeout(() => setLoading(false), 1200);
     return () => clearTimeout(timer);
   }, []);
 
@@ -20,8 +35,15 @@ const LandingPage: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("Newsletter signup:", email);
+
+    const storedEmails = JSON.parse(
+      localStorage.getItem("subscribers") || "[]"
+    );
+    storedEmails.push(email);
+    localStorage.setItem("subscribers", JSON.stringify(storedEmails));
+
     setEmail("");
+    setShowPopup(true);
   };
 
   return (
@@ -46,10 +68,10 @@ const LandingPage: React.FC = () => {
                 <a href="#contact">Contact</a>
               </div>
               <div className="auth-buttons">
-                <button className="login-btn">
+                <button className="signup-btn">
                   <Link to="/Login">Log In</Link>
                 </button>
-                <button className="signup-btn">
+                <button className="login-btn">
                   <Link to="/signup">Sign Up</Link>
                 </button>
               </div>
@@ -68,10 +90,10 @@ const LandingPage: React.FC = () => {
                   reading goals.
                 </p>
                 <div className="hero-buttons">
-                  <button className="cta-primary">
+                  <button className="cta-btn-sign">
                     <Link to="/signup">Sign Up</Link>
                   </button>
-                  <button className="cta-secondary">
+                  <button className="cta-btn-log">
                     <Link to="/Login">Log In</Link>
                   </button>
                 </div>
@@ -162,6 +184,13 @@ const LandingPage: React.FC = () => {
           </div>
         </footer>
       </div>
+
+      {showPopup && (
+        <Popup
+          message="Thank you for subscribing to our mailing list! We will be in touch."
+          onClose={() => setShowPopup(false)}
+        />
+      )}
     </motion.div>
   );
 };
