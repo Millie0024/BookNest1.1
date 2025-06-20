@@ -26,6 +26,7 @@
         "aria-required-children": "off",
         "aria-required-parent": "off"
       }
-    ]
+    ],
+    "disown-opener": "off"
   }
 }

@@ -4,14 +4,16 @@ import "../styles/Login.css";
 import { Link, useNavigate } from "react-router-dom";
 import { auth, db } from "../firebase";
 import {
-  signInWithEmailAndPassword,
   GoogleAuthProvider,
   GithubAuthProvider,
   signInWithPopup,
 } from "firebase/auth";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 import { FcGoogle } from "react-icons/fc";
 import { FaGithub } from "react-icons/fa";
+import emailImg from "../assets/email.png";
+import pwdImg from "../assets/password.png";
+import { collection, getDocs, query, where } from "firebase/firestore";
 
 interface LoginFormData {
   email: string;
@@ -76,29 +78,28 @@ const Login: React.FC = () => {
     if (Object.keys(validationErrors).length === 0) {
       setIsSubmitting(true);
       try {
-        const userCredential = await signInWithEmailAndPassword(
-          auth,
-          formData.email,
-          formData.password
+        // 🔍 Search for user document by email
+        const querySnapshot = await getDocs(
+          query(collection(db, "users"), where("email", "==", formData.email))
         );
-        const user = userCredential.user;
 
-        const userDocRef = doc(db, "users", user.uid);
-        const userDocSnap = await getDoc(userDocRef);
+        if (querySnapshot.empty) {
+          alert("User does not exist. Please sign up.");
+          return;
+        }
 
-        if (userDocSnap.exists()) {
+        const userDoc = querySnapshot.docs[0];
+        const userData = userDoc.data();
+
+        // 🔐 Compare plaintext passwords
+        if (userData.password === formData.password) {
           navigate("/dashboard");
         } else {
-          setErrors({ general: "User not found in database." });
+          setErrors({ general: "Incorrect password." });
         }
       } catch (error: any) {
-        const errorMessage =
-          error.code === "auth/user-not-found"
-            ? "User not found."
-            : error.code === "auth/wrong-password"
-            ? "Incorrect password."
-            : "Login failed. Please try again.";
-        setErrors({ general: errorMessage });
+        console.error("Login error:", error);
+        setErrors({ general: "Login failed. Please try again." });
       } finally {
         setIsSubmitting(false);
       }
@@ -119,12 +120,18 @@ const Login: React.FC = () => {
       const userDocRef = doc(db, "users", user.uid);
       const userDocSnap = await getDoc(userDocRef);
 
-      if (userDocSnap.exists()) {
-        navigate("/dashboard");
-      } else {
-        setErrors({ general: "User not found in database." });
+      // 🔧 Automatically create doc if missing
+      if (!userDocSnap.exists()) {
+        await setDoc(userDocRef, {
+          email: user.email,
+          displayName: user.displayName,
+          createdAt: new Date(),
+        });
       }
+
+      navigate("/dashboard");
     } catch (error: any) {
+      console.error("Social login error:", error);
       setErrors({ general: "Social login failed. Please try again." });
     } finally {
       setIsSubmitting(false);
@@ -157,15 +164,18 @@ const Login: React.FC = () => {
           <form onSubmit={handleSubmit} className="login-form">
             <div className="form-group">
               <label htmlFor="email">Email Address</label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                className={errors.email ? "error" : ""}
-                placeholder="example@email.com"
-              />
+              <div className="input-with-icon">
+                <img src={emailImg} alt="Email" className="input-icon" />
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  className={errors.email ? "error with-icon" : "with-icon"}
+                  placeholder="johndoe@example.com"
+                />
+              </div>
               {errors.email && (
                 <span className="error-message">{errors.email}</span>
               )}
@@ -179,6 +189,7 @@ const Login: React.FC = () => {
                 </a>
               </div>
               <div className="password-input-container">
+                <img src={pwdImg} alt="Password" className="input-icon" />
                 <input
                   type={showPassword ? "text" : "password"}
                   id="password"

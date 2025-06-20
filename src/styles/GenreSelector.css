@@ -1,0 +1,17 @@
+.genre-dropdown {
+    width: 100%;
+    padding: 8px 12px;
+    font-size: 16px;
+    border: 1.5px solid #ccc;
+    border-radius: 6px;
+    background-color: white;
+    transition: border-color 0.3s ease;
+    cursor: pointer;
+  }
+  
+  .genre-dropdown:focus {
+    outline: none;
+    border-color: #4a90e2; /* a nice blue highlight */
+    box-shadow: 0 0 6px rgba(74, 144, 226, 0.5);
+  }
+  

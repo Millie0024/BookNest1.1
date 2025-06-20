@@ -13,6 +13,9 @@ import ProtectedRoute from "./pages/ProtectedRoute";
 import VerifyOtp from "./pages/VerifyOtp";
 import { AnimatePresence } from "framer-motion";
 import { Toaster } from "react-hot-toast";
+import Modal from "react-modal";
+
+Modal.setAppElement("#root");
 
 const AnimatedRoutes = () => {
   const location = useLocation();

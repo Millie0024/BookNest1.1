@@ -4,6 +4,8 @@ import { Mail } from "lucide-react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import PageLoader from "./PageLoader";
+import homeImage from "../assets/home.jpg";
+import logoImage from "../assets/logo.jpg";
 
 const LandingPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
@@ -33,11 +35,7 @@ const LandingPage: React.FC = () => {
         <nav className="navbar">
           <div className="nav-container">
             <div className="logonav">
-              <img
-                className="brand-logo"
-                src="./logo.jpg"
-                alt="BookNest Logo"
-              />
+              <img className="brand-logo" src={logoImage} alt="BookNest Logo" />
               <h1 className="brand-name">BookNest</h1>
             </div>
 
@@ -83,7 +81,7 @@ const LandingPage: React.FC = () => {
                 <div className="hero-image-wrapper">
                   <div className="hero-image-inner">
                     <img
-                      src="./home.jpg"
+                      src={homeImage}
                       alt="BookNest Preview"
                       className="hero-image"
                     />
@@ -133,8 +131,8 @@ const LandingPage: React.FC = () => {
             <div className="newsletter-container">
               <div className="contact-email">
                 <Mail className="email-icon" />
-                <a href="mailto:booknest264@gmail.com" className="email-link">
-                  booknest264@gmail.com
+                <a href="mailto:booknest64@gmail.com" className="email-link">
+                  booknest64@gmail.com
                 </a>
               </div>
 
